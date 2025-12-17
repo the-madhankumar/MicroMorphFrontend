@@ -1,0 +1,25 @@
+.kpiCard-container {
+  border: 1px solid #e2e8f0;
+  padding: 14px 16px;
+  border-radius: 12px;
+  width: 160px;
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: transform 0.15s ease;
+}
+
+.kpiCard-container label {
+  font-size: 18px;
+  font-weight: bold;
+  color: #0066ff;
+  text-transform: capitalize;
+}
+
+.kpiCard-container p {
+  font-size: 18px;
+  font-weight: 600;
+  color: #0066ff;
+}

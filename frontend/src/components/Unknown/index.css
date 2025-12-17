@@ -1,0 +1,102 @@
+.unknown-container {
+    padding: 20px;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.unknown-card {
+    border: 1px solid #d0d0d0;
+    border-radius: 12px;
+    padding: 18px;
+    background: #3699e94d;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: 0.2s ease-in-out;
+    margin-left: 180px;
+    margin-right: 180px;
+}
+
+.unknown-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 100%;
+    gap: 20px;
+}
+
+.preview-box {
+    width: 80px;
+    height: 80px;
+}
+
+.preview-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid #eee;
+}
+
+.card-id {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.card-name {
+    opacity: 0.75;
+}
+
+.action-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    background: #007bff;
+    color: white;
+    transition: 0.2s;
+}
+
+.action-btn:hover {
+    background: #005fcc;
+}
+
+.show-btn {
+    background: #289aa7;
+}
+
+.show-btn:hover {
+    background: #1f7f35;
+}
+
+.images-grid {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.folder-img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid #e2e2e2;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
