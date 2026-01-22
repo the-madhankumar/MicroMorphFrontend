@@ -6,6 +6,7 @@ import KpiCard from "./kpiCard";
 import { ArrowBigLeftDash, ArrowBigRightDash } from "lucide-react";
 import { getAllSensorData, getAllInferenceImages, getClassCounts, geo, getMainImages, getshowMainImage, getOrigImage } from "../FirebaseService/firebaseService.js";
 import "./index.css";
+import { RingLoader } from 'react-spinners';
 
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -39,8 +40,11 @@ class ShowImages extends Component {
         showDataTurbidity: false,
         showDatatds: false,
 
+
         latitude: 0.0,
-        longitude: 0.0
+        longitude: 0.0,
+
+        isLoading: false
     };
 
     componentDidUpdate(prevProps, prevState) {
@@ -57,6 +61,9 @@ class ShowImages extends Component {
 
 
     async componentDidMount() {
+        this.setState({
+            isLoading: true,
+        })
         const base64MainImage = await getshowMainImage();
         const imgSrc = `data:image/jpeg;base64,${base64MainImage}` || null;
 
@@ -74,7 +81,10 @@ class ShowImages extends Component {
         }));
 
         const sensor = await getAllSensorData();
-        const sensorArr = Object.values(sensor || {});
+
+        const sensorArr = Object.values(sensor || {}).slice(-10);
+        console.log("[DEBUG enno vela panrom] sensor data : ", sensorArr.length)
+        console.log("[DEBUG idhu mudiya ve mudiyadha] last data : ", sensorArr[sensorArr.length - 1])
 
         const geos = await geo();
 
@@ -89,12 +99,14 @@ class ShowImages extends Component {
             sensorDataTurbidity: sensorArr.map(x => x.turbidity),
             sensorDataTime: sensorArr.map(x => x.timestamp),
 
-            latitude: geos.latitude,
-            longitude: geos.longitude,
+            latitude: (geos.latitude == 0) ? 12.971581 : geos.latitude,
+            longitude: (geos.longitude == 0) ? 80.043419 : geos.longitude,
             origImage: imgSrcOrig,
         });
 
-        this.intervalId = setInterval(this.fetchAndUpdate, 1000);
+        this.setState({
+            isLoading: false,
+        })
     }
 
     componentWillUnmount() {
@@ -138,14 +150,22 @@ class ShowImages extends Component {
         const s = this.state;
         console.log("[CHECK] currentImage specs : ", s.showImageData[s.carouselIndex])
 
+        const yoloResult = this.props.location?.state?.yoloResult ?? false;
+        const unknown = yoloResult === true;
+
         const lineData =
             s.showDataPh ? s.sensorDataPh :
                 s.showDataTemperature ? s.sensorDataTemperature :
                     s.showDataTurbidity ? s.sensorDataTurbidity :
                         s.showDatatds ? s.sensorDatatds : [];
 
-        return (
-            <div className="dashboard">
+        return s.isLoading ? (
+            <div className="global-loader">
+                <RingLoader
+                    color="#123abc"
+                    size={180}
+                />
+            </div>) : (<div className="dashboard">
 
                 <label className="panels">Image Panel</label>
                 <div className="first-panel">
@@ -214,7 +234,7 @@ class ShowImages extends Component {
 
                 <label className="panels">
                     <div>KPI Panel</div>
-                    <div className="result">Aggregated Result : {s.currentImageSpec?.final_class ?? null}</div>
+                    <div className="result">Aggregated Result : {(unknown) ? "UNKNOWN" : s.currentImageSpec?.final_class ?? null}</div>
                 </label>
 
                 <div className="panel kpi-panel">
@@ -223,8 +243,8 @@ class ShowImages extends Component {
                             <KpiCard
                                 key={model}
                                 model={model}
-                                confidence={s.currentImageSpec.confidence?.[model] ?? null}
-                                classification={s.currentImageSpec.model_outputs?.[model] ?? null}
+                                confidence={(unknown || s.currentImageSpec.confidence < 0.45) ? "N/A" : s.currentImageSpec.confidence?.[model] ?? null}
+                                classification={(unknown || s.currentImageSpec.confidence < 0.45) ? "UNKNOWN" : s.currentImageSpec.model_outputs?.[model] ?? null}
                             />
                         ))
                     ) : (
@@ -235,7 +255,7 @@ class ShowImages extends Component {
                 <div className="panel flex-row">
                     <div className="pie-area">
                         <label className="panels">Count Specification</label>
-                        <BasicPie datavalues={s.piechartDataValues} />
+                        {(unknown) ? <img src="/images/un.png" alt="not found" style={{ height: '400px', width: '100%' }} /> : <BasicPie datavalues={s.piechartDataValues} />}
                     </div>
 
                     <div className="line-area">
@@ -262,25 +282,25 @@ class ShowImages extends Component {
                     <div className="line-area">
                         <div className="line-select">
                             <div className={s.showDataPh ? "sel active" : "sel"} onClick={() => this.pick("ph")}>
-                                pH : {s.sensorDataPh[0]}
+                                pH : {s.sensorDataPh[s.sensorDataPh.length - 1]}
                             </div>
                             <div className={s.showDataTemperature ? "sel active" : "sel"} onClick={() => this.pick("temp")}>
-                                Temp : {s.sensorDataTemperature[0]}
+                                Temp : {s.sensorDataTemperature[s.sensorDataPh.length - 1]}
                             </div>
                             <div className={s.showDataTurbidity ? "sel active" : "sel"} onClick={() => this.pick("turb")}>
-                                Turb : {s.sensorDataTurbidity[0]}
+                                Turb : {s.sensorDataTurbidity[s.sensorDataPh.length - 1]}
                             </div>
                             <div className={s.showDatatds ? "sel active" : "sel"} onClick={() => this.pick("tds")}>
-                                TDS : {s.sensorDatatds[0]}
+                                TDS : {s.sensorDatatds[s.sensorDataPh.length - 1]}
                             </div>
                         </div>
 
                         <BasicLineChart xdata={s.sensorDataTime} ydata={lineData} />
                     </div>
                 </div>
-            </div>
-        );
+            </div>)
     }
+
 }
 
 export default withRouter(ShowImages);

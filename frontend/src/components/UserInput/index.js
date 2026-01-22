@@ -3,7 +3,8 @@ import { MonitorUp, StepForward } from "lucide-react";
 import { CustomWebcam } from "./CustomWebcam";
 import { SpinnerCircular } from "spinners-react";
 import { withRouter } from "../../withRouter";
-import { addLogs, getMainImage } from "../FirebaseService/firebaseService";
+import { addLogs, getMainImage, remoteConfig } from "../FirebaseService/firebaseService";
+import { fetchAndActivate } from "firebase/remote-config";
 import "./index.css";
 
 class UserInput extends Component {
@@ -18,8 +19,27 @@ class UserInput extends Component {
         microscope: "",
         date: "",
         time: "",
-        ship_name: ""
+        ship_name: "",
+        
+        base_url: ""
     };
+
+    componentDidMount() {
+        fetchAndActivate(remoteConfig)
+            .then(() => {
+                const baseUrl = remoteConfig
+                    .getValue("base_url")
+                    .asString();
+
+                this.setState({
+                    base_url: baseUrl || ""
+                });
+            })
+            .catch((error) => {
+                console.error("Remote Config error:", error);
+            });
+    }
+
 
     handleCapture = (img) => {
         this.setState({ imgSrc: img });
@@ -68,12 +88,20 @@ class UserInput extends Component {
                 formData.append("file", blob, "capture.jpg");
             }
 
-            const response = await fetch("http://localhost:8000/yolo", {
+            const baseUrl = this.state.base_url.replace(/\/$/, "");
+
+            const response = await fetch(`${baseUrl}/yolo`, {
                 method: "POST",
                 body: formData
             });
 
             const data = await response.json();
+
+            console.log(data.error)
+            if ("error" in data) {
+                console.log(true);
+            }
+
 
             await addLogs({
                 longitude: this.state.longitude,

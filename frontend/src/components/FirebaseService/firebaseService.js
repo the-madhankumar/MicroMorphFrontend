@@ -1,9 +1,12 @@
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, push, set, get, update, remove, onValue } from "firebase/database";
 import firebaseConfig from "./config.mjs";
+import { getRemoteConfig } from "firebase/remote-config";
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+
+export const remoteConfig = getRemoteConfig(app);
 
 export function addSensorData(data) {
   const newRef = push(ref(db, "sensor_data"));
