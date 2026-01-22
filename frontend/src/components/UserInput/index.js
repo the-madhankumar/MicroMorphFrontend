@@ -4,7 +4,7 @@ import { CustomWebcam } from "./CustomWebcam";
 import { SpinnerCircular } from "spinners-react";
 import { withRouter } from "../../withRouter";
 import { addLogs, getMainImage, remoteConfig } from "../FirebaseService/firebaseService";
-import { fetchAndActivate } from "firebase/remote-config";
+import { fetchAndActivate, getValue } from "firebase/remote-config";
 import "./index.css";
 
 class UserInput extends Component {
@@ -20,16 +20,14 @@ class UserInput extends Component {
         date: "",
         time: "",
         ship_name: "",
-        
+
         base_url: ""
     };
 
     componentDidMount() {
         fetchAndActivate(remoteConfig)
             .then(() => {
-                const baseUrl = remoteConfig
-                    .getValue("base_url")
-                    .asString();
+                const baseUrl = getValue(remoteConfig, "base_url").asString();
 
                 this.setState({
                     base_url: baseUrl || ""
@@ -155,7 +153,8 @@ class UserInput extends Component {
     };
 
     render() {
-        const { live, upload, imgSrc, loading } = this.state;
+        const { live, upload, imgSrc, loading, base_url } = this.state;
+        console.log("[DEBUG] Base URL : ", base_url);
 
         return (
             <div className="UserInput-container">
