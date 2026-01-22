@@ -4,7 +4,7 @@ import BasicPie from "./PieChart";
 import BasicLineChart from "./LineChart";
 import KpiCard from "./kpiCard";
 import { ArrowBigLeftDash, ArrowBigRightDash } from "lucide-react";
-import { getAllSensorData, getAllInferenceImages, getClassCounts, geo, getMainImages, getshowMainImage, getOrigImage } from "../FirebaseService/firebaseService.js";
+import { getAllSensorData, getAllInferenceImages, getClassCounts, geo, getshowMainImage, getOrigImage } from "../FirebaseService/firebaseService.js";
 import "./index.css";
 import { RingLoader } from 'react-spinners';
 
