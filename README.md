@@ -3,10 +3,10 @@
 The frontend for the MicroMorph platform is a React-based web application that provides a user-friendly interface for real-time marine micro-organism analysis and water quality monitoring[cite: 307, 354].
 
 ## 🚀 Features
-* **Live Analysis:** Supports both Live Capture via a USB microscope and manual image uploads[cite: 346].
-* **Data Visualization:** Integrated dashboards with Bar, Pie, Line, and Gauge charts to visualize organism counts and ecological trends[cite: 305].
-* **Environmental Monitoring:** Tracks real-time water quality parameters including pH, Temperature, Turbidity, and Salinity[cite: 359, 368].
-* **Species Dataset:** View and manage identified species and "Unknown" organisms detected by the system[cite: 339, 340].
+* **Live Analysis:** Supports both Live Capture via a USB microscope and manual image uploads.
+* **Data Visualization:** Integrated dashboards with Bar, Pie, Line, and Gauge charts to visualize organism counts and ecological trends.
+* **Environmental Monitoring:** Tracks real-time water quality parameters including pH, Temperature, Turbidity, and Salinity.
+* **Species Dataset:** View and manage identified species and "Unknown" organisms detected by the system.
 
 ## 🛠️ Tech Stack
 * **Framework:** React.js 
